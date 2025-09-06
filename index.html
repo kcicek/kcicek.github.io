@@ -1,1 +1,36 @@
-hello
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chanting Train</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+    <h1>Chanting Train</h1>
+    <div id="arabic-title" lang="ar">بِسْمِ ٱللهِ ٱلرَّحْمَٰنِ ٱلرَّحِيْمِ</div>
+        <div id="chant-display"></div>
+        <div id="chant-buttons" style="margin-bottom:10px;">
+            <button class="chant-btn" data-chant="Subhanaka Allahumma wa bihamdika wa tabarakasmuka, wa ta’ala jadduka wa la ilaha ghairuk">Subhanake</button>
+            <button class="chant-btn" data-chant="Bismilahi rahmani rahim">besmele</button>
+            <button class="chant-btn" data-chant="Ina atainak al-kauthar, Fa salli li rabbika wanhar, Inna shaniaka huwal abtar">Kawthar</button>
+            <button class="chant-btn" data-chant="Qul hu walahu ahad, Allahus samad, Lam yalid wa lam yulad, Wa lam yakun lahu kufuwan ahad">Ehlas</button>
+        </div>
+        <textarea id="user-input" placeholder="Type the chant here... (multiple lines allowed)" rows="4"></textarea>
+        <div style="margin-top:8px; margin-bottom:4px;">
+            <label style="font-size:1em; user-select:none;">
+                <input type="checkbox" id="guidance-switch" checked style="vertical-align:middle;"> Show Guidance
+            </label>
+        </div>
+        <button id="submit-button">Submit</button>
+    <div id="score-display" style="display:none;"></div>
+        <div id="message-display"></div>
+        <div id="end-menu" style="display:none; text-align:center; margin-top:24px;">
+            <button id="replay-btn" class="chant-btn" style="min-width:120px;">Re-play</button>
+            <button id="home-btn" class="chant-btn" style="min-width:120px;">Home</button>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

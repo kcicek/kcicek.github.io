@@ -1,0 +1,195 @@
+#end-menu {
+    margin-top: 28px;
+    text-align: center;
+}
+#end-menu .chant-btn {
+    margin: 0 16px;
+    min-width: 120px;
+    font-weight: 600;
+    font-size: 1.08em;
+}
+#chant-buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.chant-btn {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 18px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 4px;
+}
+.chant-btn:hover {
+    background: #1565c0;
+}
+body {
+    font-family: Arial, sans-serif;
+    background: #e0f7fa;
+    margin: 0;
+    padding: 0;
+}
+#game-container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+}
+h1 {
+    text-align: center;
+}
+#arabic-title {
+    text-align: center;
+    direction: rtl;
+    font-size: 1.05em;
+    color: #333;
+    margin-top: -6px;
+    margin-bottom: 8px;
+    font-family: 'Segoe UI', Tahoma, 'Noto Naskh Arabic', 'Amiri', serif;
+}
+.chant-track {
+    position: absolute;
+    left: 0;
+    top: 80px;
+    width: 100%;
+    height: 8px;
+    background: repeating-linear-gradient(90deg, #222 0 16px, transparent 16px 32px),
+                repeating-linear-gradient(90deg, #888 0 3px, transparent 3px 16px),
+                repeating-linear-gradient(0deg, #795548 0 3px, transparent 3px 8px);
+    background-size: 32px 8px, 16px 8px, 100% 8px;
+    border-bottom: 2px solid #795548;
+    border-top: 2px solid #795548;
+    z-index: 2; /* put track behind train */
+}
+#chant-display {
+    width: 100%;
+    height: 120px;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+    background: #b3e5fc;
+}
+.background {
+    position: absolute;
+    left: 0;
+    top: 80px;
+    width: 100%;
+    height: 40px;
+    z-index: 10; /* background should be behind train */
+}
+.tree, .house {
+    position: absolute;
+    bottom: 0;
+    z-index: 9; /* scenery behind train */
+}
+.tree {
+    width: 40px;
+    height: 60px;
+}
+.house {
+    width: 48px;
+    height: 48px;
+}
+.train {
+    display: flex;
+    align-items: flex-end;
+    position: absolute;
+    left: 50%;
+    top: 48px; /* higher above the track */
+    transform: translateX(-50%);
+    z-index: 60; /* ensure train is on top */
+    transition: transform 300ms ease; /* smooth movement when shifting */
+}
+.engine {
+    width: 60px;
+    height: 40px;
+    margin-right: 8px;
+    position: relative;
+    background: none;
+}
+.engine svg {
+    display: block;
+    width: 60px;
+    height: 40px;
+}
+.engine {
+    transition: transform 400ms ease;
+}
+.car {
+    min-width: 60px;
+    height: 40px;
+    background: #2196f3;
+    border-radius: 8px;
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    color: #fff;
+    position: relative;
+}
+.car.faded {
+    opacity: 0.35;
+    filter: blur(0.6px);
+}
+.letter {
+    padding: 2px 4px;
+    border-radius: 3px;
+    background: #fff;
+    color: #2196f3;
+    margin: 0 1px;
+    transition: background 0.2s, color 0.2s;
+}
+.letter.correct {
+    background: #4caf50;
+    color: #fff;
+}
+.letter.current {
+    background: #ffeb3b;
+    color: #333;
+}
+#user-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.05em;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 72px;
+}
+#submit-button {
+    padding: 10px 20px;
+    font-size: 1em;
+    background: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+#score-display {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+/* If scripts insert a label and a value, hide any static label element and show only the time value.
+   Prefer scripts to write 'Time: 12s' directly into this element. */
+#score-display .label {
+    display: none;
+}
+#message-display {
+    font-size: 1em;
+    color: #333;
+    min-height: 24px;
+    margin-bottom: 10px;
+}
