@@ -223,7 +223,8 @@ function adjustForActiveLetter() {
         var letterEls = currentCar.querySelectorAll('.letter');
         var letterEl = letterEls && letterEls.length ? letterEls[Math.min(currentLetterIndex, letterEls.length - 1)] : null;
         var containerRect = chantDisplay.getBoundingClientRect();
-        var containerCenterX = containerRect.left + containerRect.width / 2;
+        var containerWidth = containerRect.width;
+        var containerCenterX = containerRect.left + containerWidth / 2;
         var targetCenterX;
         if (letterEl) {
             var lr = letterEl.getBoundingClientRect();
@@ -233,22 +234,31 @@ function adjustForActiveLetter() {
             targetCenterX = cr.left + cr.width / 2;
         }
         var gap = targetCenterX - containerCenterX;
-                    // Guidance logic: hide letters until typed if guidance is off
-                    if (!guidanceOn && i === currentWordIndex && j > currentLetterIndex) {
-                        letterSpan.textContent = '';
-                    } else if (!guidanceOn && i > currentWordIndex) {
-                        letterSpan.textContent = '';
-                    } else {
-                        letterSpan.textContent = word[j];
-                    }
-        var threshold = 6;
-        if (gap > threshold) {
-            // move at most two chars at once to avoid big jumps
-            var move = Math.min(Math.max(charStep, Math.round(gap)), charStep * 2);
-            trainShift += move;
-            var trainEl = chantDisplay.querySelector('.train');
-            if (trainEl) trainEl.style.transform = 'translateX(' + (-trainShift) + 'px)';
+
+        // Calculate the desired shift to center the active letter
+        var desiredShift = trainShift + gap;
+
+        // Clamp so the active letter never goes out of the left or right edge
+        if (letterEl) {
+            var letterRect = letterEl.getBoundingClientRect();
+            var letterWidth = letterRect.width;
+            // The leftmost the train can be shifted so the letter is at the left edge
+            var minShift = trainShift + (letterRect.left - containerRect.left);
+            // The rightmost the train can be shifted so the letter is at the right edge
+            var maxShift = trainShift + (letterRect.right - containerRect.right);
+            // Clamp desiredShift so the letter never goes out of bounds
+            if (desiredShift < trainShift + (letterRect.left - containerRect.left - containerWidth/2 + letterWidth/2)) {
+                desiredShift = trainShift + (letterRect.left - containerRect.left - containerWidth/2 + letterWidth/2);
+            }
+            if (desiredShift > trainShift + (letterRect.right - containerRect.right + containerWidth/2 - letterWidth/2)) {
+                desiredShift = trainShift + (letterRect.right - containerRect.right + containerWidth/2 - letterWidth/2);
+            }
         }
+
+        // Smoothly animate to the new shift
+        trainShift = desiredShift;
+        var trainEl = chantDisplay.querySelector('.train');
+        if (trainEl) trainEl.style.transform = 'translateX(' + (-trainShift) + 'px)';
     } catch (e) {
         // ignore measurement errors
     }
