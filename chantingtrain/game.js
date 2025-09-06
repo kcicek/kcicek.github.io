@@ -223,30 +223,31 @@ function adjustForActiveLetter() {
         var letterEls = currentCar.querySelectorAll('.letter');
         var letterEl = letterEls && letterEls.length ? letterEls[Math.min(currentLetterIndex, letterEls.length - 1)] : null;
 
-        // Force layout sync by clearing left first (baseline at 0)
-        train.style.left = '0px';
-        // Measure after reset
+        // DO NOT reset left: we want monotonic forward motion.
         var containerRect = chantDisplay.getBoundingClientRect();
-        var containerCenter = containerRect.width / 2; // relative center in container coordinates
-        var focus = letterEl || currentCar;
-        var focusRect = focus.getBoundingClientRect();
-        var trainRect = train.getBoundingClientRect();
-        // Compute focus center relative to container left
-        var focusCenterRel = focusRect.left - containerRect.left + focusRect.width / 2;
-        var delta = focusCenterRel - containerCenter; // positive means focus is right of center
-        // trainShift is how many pixels we shift the whole train leftwards (so subtract delta)
-        trainShift = delta;
-        // Constrain so active letter never leaves boundaries
-        if (letterEl) {
-            var lr = letterEl.getBoundingClientRect();
-            var leftRel = lr.left - containerRect.left;
-            var rightRel = lr.right - containerRect.left;
-            if (leftRel < 0) trainShift += leftRel; // push right
-            if (rightRel > containerRect.width) trainShift += (rightRel - containerRect.width); // push left
+        var containerWidth = containerRect.width;
+        var marginRight = 90; // keep some space to right edge
+        var marginLeft = 30;  // minimal left visibility margin
+
+        var targetEl = letterEl || currentCar;
+        var tr = targetEl.getBoundingClientRect();
+        var letterLeftRel = tr.left - containerRect.left;
+        var letterRightRel = tr.right - containerRect.left;
+
+        // If active letter goes past right safe boundary, advance (increase trainShift)
+        var rightLimit = containerWidth - marginRight;
+        if (letterRightRel > rightLimit) {
+            var needed = letterRightRel - rightLimit;
+            trainShift += needed;
         }
-        // Apply negative shift: moving left when focus is right.
+        // Only allow backward correction at very start (when trainShift == 0) to bring first letter into view
+        if (trainShift === 0 && letterLeftRel < marginLeft) {
+            // shift forward just enough (still trainShift stays 0 because we don't move backwards visually)
+            // no-op since we don't want negative trainShift; ensure initial text is visible by tiny forward fudge
+        }
+        // Apply
         train.style.left = (-trainShift) + 'px';
-    } catch (e) { /* ignore */ }
+    } catch (e) { /* ignore errors */ }
 }
 
 function handleInput(e) {
