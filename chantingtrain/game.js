@@ -152,8 +152,8 @@ function renderTrain() {
     }
     chantDisplay.appendChild(train);
 
-    // Apply the last computed additional shift while preserving base centering (-50%).
-    train.style.transform = 'translateX(-50%) translateX(' + (-trainShift) + 'px)';
+    // Position via left property now; trainShift represents pixels to shift so focused letter is centered.
+    train.style.left = (-trainShift) + 'px';
 
         // Fade earlier cars so the focused/current word stands out
         try {
@@ -222,31 +222,31 @@ function adjustForActiveLetter() {
         var currentCar = carEls[Math.min(currentWordIndex, carEls.length - 1)];
         var letterEls = currentCar.querySelectorAll('.letter');
         var letterEl = letterEls && letterEls.length ? letterEls[Math.min(currentLetterIndex, letterEls.length - 1)] : null;
-        // Reset to baseline (no pixel offset) before measuring to avoid compounding
-        train.style.transform = 'translateX(-50%)';
-        requestAnimationFrame(function() {
-            try {
-                var containerRect = chantDisplay.getBoundingClientRect();
-                var containerCenter = containerRect.left + containerRect.width / 2;
-                var focus = letterEl || currentCar;
-                var focusRect = focus.getBoundingClientRect();
-                var focusCenter = focusRect.left + focusRect.width / 2;
-                var gap = focusCenter - containerCenter; // positive if focus sits right of center
-                // Absolute centering: pixel shift equals current gap (no accumulation)
-                trainShift = gap;
-                // Clamp so letter never leaves container horizontally
-                if (letterEl) {
-                    var lr = letterEl.getBoundingClientRect();
-                    var overLeft = lr.left - containerRect.left;
-                    var overRight = lr.right - containerRect.right;
-                    if (overLeft < 0) gap -= overLeft; // move right
-                    if (overRight > 0) gap += overRight; // move left
-                    trainShift = gap; // update after clamp
-                }
-                train.style.transform = 'translateX(-50%) translateX(' + (-trainShift) + 'px)';
-            } catch (inner) {}
-        });
-    } catch (e) {}
+
+        // Force layout sync by clearing left first (baseline at 0)
+        train.style.left = '0px';
+        // Measure after reset
+        var containerRect = chantDisplay.getBoundingClientRect();
+        var containerCenter = containerRect.width / 2; // relative center in container coordinates
+        var focus = letterEl || currentCar;
+        var focusRect = focus.getBoundingClientRect();
+        var trainRect = train.getBoundingClientRect();
+        // Compute focus center relative to container left
+        var focusCenterRel = focusRect.left - containerRect.left + focusRect.width / 2;
+        var delta = focusCenterRel - containerCenter; // positive means focus is right of center
+        // trainShift is how many pixels we shift the whole train leftwards (so subtract delta)
+        trainShift = delta;
+        // Constrain so active letter never leaves boundaries
+        if (letterEl) {
+            var lr = letterEl.getBoundingClientRect();
+            var leftRel = lr.left - containerRect.left;
+            var rightRel = lr.right - containerRect.left;
+            if (leftRel < 0) trainShift += leftRel; // push right
+            if (rightRel > containerRect.width) trainShift += (rightRel - containerRect.width); // push left
+        }
+        // Apply negative shift: moving left when focus is right.
+        train.style.left = (-trainShift) + 'px';
+    } catch (e) { /* ignore */ }
 }
 
 function handleInput(e) {

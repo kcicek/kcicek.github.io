@@ -102,11 +102,10 @@ h1 {
     display: flex;
     align-items: flex-end;
     position: absolute;
-    left: 50%;
+    left: 0;
     top: 48px; /* higher above the track */
-    transform: translateX(-50%);
     z-index: 30; /* train above track, below trees/houses */
-    transition: transform 300ms ease; /* smooth movement when shifting */
+    transition: left 180ms ease; /* smooth movement when shifting */
 }
 .engine {
     width: 60px;
