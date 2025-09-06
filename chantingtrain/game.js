@@ -222,41 +222,31 @@ function adjustForActiveLetter() {
         var currentCar = carEls[Math.min(currentWordIndex, carEls.length - 1)];
         var letterEls = currentCar.querySelectorAll('.letter');
         var letterEl = letterEls && letterEls.length ? letterEls[Math.min(currentLetterIndex, letterEls.length - 1)] : null;
-        var containerRect = chantDisplay.getBoundingClientRect();
-        var containerCenter = containerRect.left + containerRect.width / 2;
-
-        // Choose focus element (letter if available, else the car)
-        var focus = letterEl || currentCar;
-        var focusRect = focus.getBoundingClientRect();
-        var focusCenter = focusRect.left + focusRect.width / 2;
-        var gap = focusCenter - containerCenter; // positive if focus is to right of center
-        // Adjust additional shift so focus recenters exactly
-        trainShift += gap;
-        // Apply transform composing with baseline translateX(-50%)
-        train.style.transform = 'translateX(-50%) translateX(' + (-trainShift) + 'px)';
-
-        // Second pass after layout update to enforce full visibility of the active letter
-        if (letterEl) {
-            requestAnimationFrame(function() {
-                try {
+        // Reset to baseline (no pixel offset) before measuring to avoid compounding
+        train.style.transform = 'translateX(-50%)';
+        requestAnimationFrame(function() {
+            try {
+                var containerRect = chantDisplay.getBoundingClientRect();
+                var containerCenter = containerRect.left + containerRect.width / 2;
+                var focus = letterEl || currentCar;
+                var focusRect = focus.getBoundingClientRect();
+                var focusCenter = focusRect.left + focusRect.width / 2;
+                var gap = focusCenter - containerCenter; // positive if focus sits right of center
+                // Absolute centering: pixel shift equals current gap (no accumulation)
+                trainShift = gap;
+                // Clamp so letter never leaves container horizontally
+                if (letterEl) {
                     var lr = letterEl.getBoundingClientRect();
                     var overLeft = lr.left - containerRect.left;
                     var overRight = lr.right - containerRect.right;
-                    if (overLeft < 0) {
-                        trainShift += overLeft; // overLeft negative: move right
-                    }
-                    if (overRight > 0) {
-                        trainShift += overRight; // move left
-                    }
-                    if (overLeft < 0 || overRight > 0) {
-                        train.style.transform = 'translateX(-50%) translateX(' + (-trainShift) + 'px)';
-                    }
-                } catch (e2) {}
-            });
-        }
-    } catch (e) {
-        // ignore measurement errors
-    }
+                    if (overLeft < 0) gap -= overLeft; // move right
+                    if (overRight > 0) gap += overRight; // move left
+                    trainShift = gap; // update after clamp
+                }
+                train.style.transform = 'translateX(-50%) translateX(' + (-trainShift) + 'px)';
+            } catch (inner) {}
+        });
+    } catch (e) {}
 }
 
 function handleInput(e) {
