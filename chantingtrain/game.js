@@ -238,20 +238,20 @@ function adjustForActiveLetter() {
         // Calculate the desired shift to center the active letter
         var desiredShift = trainShift + gap;
 
-        // Clamp so the active letter never goes out of the left or right edge
+        // Strictly clamp so the highlighted letter is always fully visible
         if (letterEl) {
             var letterRect = letterEl.getBoundingClientRect();
             var letterWidth = letterRect.width;
-            // The leftmost the train can be shifted so the letter is at the left edge
-            var minShift = trainShift + (letterRect.left - containerRect.left);
-            // The rightmost the train can be shifted so the letter is at the right edge
-            var maxShift = trainShift + (letterRect.right - containerRect.right);
-            // Clamp desiredShift so the letter never goes out of bounds
-            if (desiredShift < trainShift + (letterRect.left - containerRect.left - containerWidth/2 + letterWidth/2)) {
-                desiredShift = trainShift + (letterRect.left - containerRect.left - containerWidth/2 + letterWidth/2);
+            // Calculate the left and right bounds for the letter inside the container
+            var letterLeftInContainer = letterRect.left - containerRect.left;
+            var letterRightInContainer = letterRect.right - containerRect.left;
+            // If the letter would go out of the left edge, shift more right
+            if (letterLeftInContainer < 0) {
+                desiredShift -= letterLeftInContainer;
             }
-            if (desiredShift > trainShift + (letterRect.right - containerRect.right + containerWidth/2 - letterWidth/2)) {
-                desiredShift = trainShift + (letterRect.right - containerRect.right + containerWidth/2 - letterWidth/2);
+            // If the letter would go out of the right edge, shift more left
+            if (letterRightInContainer > containerWidth) {
+                desiredShift -= (letterRightInContainer - containerWidth);
             }
         }
 
