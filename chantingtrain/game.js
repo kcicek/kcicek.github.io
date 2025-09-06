@@ -152,8 +152,8 @@ function renderTrain() {
     }
     chantDisplay.appendChild(train);
 
-        // Apply the last computed trainShift (set on correct input) so the train doesn't re-measure every frame.
-        train.style.transform = 'translateX(' + (-trainShift) + 'px)';
+    // Apply the last computed additional shift while preserving base centering (-50%).
+    train.style.transform = 'translateX(-50%) translateX(' + (-trainShift) + 'px)';
 
         // Fade earlier cars so the focused/current word stands out
         try {
@@ -223,36 +223,36 @@ function adjustForActiveLetter() {
         var letterEls = currentCar.querySelectorAll('.letter');
         var letterEl = letterEls && letterEls.length ? letterEls[Math.min(currentLetterIndex, letterEls.length - 1)] : null;
         var containerRect = chantDisplay.getBoundingClientRect();
-        var containerWidth = containerRect.width;
-        // Safe zone (keep letter roughly centered but allow small movement before recentering)
-        var safeLeft = containerRect.left + containerWidth * 0.35; // 35% from left
-        var safeRight = containerRect.left + containerWidth * 0.65; // 65% from left
+        var containerCenter = containerRect.left + containerRect.width / 2;
 
+        // Choose focus element (letter if available, else the car)
+        var focus = letterEl || currentCar;
+        var focusRect = focus.getBoundingClientRect();
+        var focusCenter = focusRect.left + focusRect.width / 2;
+        var gap = focusCenter - containerCenter; // positive if focus is to right of center
+        // Adjust additional shift so focus recenters exactly
+        trainShift += gap;
+        // Apply transform composing with baseline translateX(-50%)
+        train.style.transform = 'translateX(-50%) translateX(' + (-trainShift) + 'px)';
+
+        // Second pass after layout update to enforce full visibility of the active letter
         if (letterEl) {
-            var lr = letterEl.getBoundingClientRect();
-            // If letter exits safe zone, re-center
-            if (lr.left < safeLeft || lr.right > safeRight) {
-                var targetCenter = containerRect.left + containerWidth * 0.5; // center target
-                var letterCenter = lr.left + lr.width / 2;
-                var gap = letterCenter - targetCenter;
-                trainShift += gap; // move opposite (transform uses negative trainShift)
-            }
-            // Hard clamp to keep fully inside
-            // Recompute after potential shift application visually by estimating instead of second layout pass
-            // Estimate new letter left/right in container after shift: subtract gap due to transform
-            var estimatedLeft = lr.left - containerRect.left - (trainShift ? 0 : 0); // rough; if slight error, next call fixes
-            // Apply transform now
-            var trainEl = chantDisplay.querySelector('.train');
-            if (trainEl) trainEl.style.transform = 'translateX(' + (-trainShift) + 'px)';
-        } else {
-            // Center current car if no specific letter element yet (e.g., at start of new word)
-            var cr = currentCar.getBoundingClientRect();
-            var carCenter = cr.left + cr.width / 2;
-            var targetCenter2 = containerRect.left + containerWidth * 0.5;
-            var gap2 = carCenter - targetCenter2;
-            trainShift += gap2;
-            var trainEl2 = chantDisplay.querySelector('.train');
-            if (trainEl2) trainEl2.style.transform = 'translateX(' + (-trainShift) + 'px)';
+            requestAnimationFrame(function() {
+                try {
+                    var lr = letterEl.getBoundingClientRect();
+                    var overLeft = lr.left - containerRect.left;
+                    var overRight = lr.right - containerRect.right;
+                    if (overLeft < 0) {
+                        trainShift += overLeft; // overLeft negative: move right
+                    }
+                    if (overRight > 0) {
+                        trainShift += overRight; // move left
+                    }
+                    if (overLeft < 0 || overRight > 0) {
+                        train.style.transform = 'translateX(-50%) translateX(' + (-trainShift) + 'px)';
+                    }
+                } catch (e2) {}
+            });
         }
     } catch (e) {
         // ignore measurement errors
@@ -274,9 +274,9 @@ function handleInput(e) {
     if (typed === expected) {
     playClickSound();
     currentLetterIndex++;
-    // Re-render and then adjust (we no longer rely on fixed charStep increments)
+    // Re-render and then aggressively re-center active letter
     renderTrain();
-    setTimeout(function(){ adjustForActiveLetter(); }, 0);
+    setTimeout(adjustForActiveLetter, 0);
         if (currentLetterIndex === currentWord.length) {
             currentWordIndex++;
             currentLetterIndex = 0;
