@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ConQUEST</title>
+    <script type="module" crossorigin src="./assets/index-BQtDcVVY.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CpOy7KEa.css">
+  </head>
+
+  <body>
+    <div id="introScreen" class="intro-overlay">
+      <div class="intro-content">
+  <h1><span class="intro-welcome">Welcome to</span> <span class="intro-title with-logo">
+          <img id="introTitleLogo" src="./assets/logo-rrmsOlgV.png" alt="ConQUEST logo"
+               onload="this.closest('.intro-title').classList.add('loaded')"
+               onerror="this.closest('.intro-title').classList.add('error')" />
+          <span class="intro-title-text">ConQUEST</span>
+        </span></h1>
+        <div class="intro-flag-banner" id="introFlagBanner"></div>
+        <div class="intro-infobox">
+          <div class="intro-infobox-title">How to Play</div>
+          <ul class="intro-infobox-list">
+            <li>A flag appears at the top.</li>
+            <li>Select the correct country and its capital.</li>
+            <li>Conquer more than half the map to win.</li>
+            <li>Play solo or compete in two-player mode.</li>
+          </ul>
+        </div>
+        <form id="introForm">
+          <div class="intro-field">
+            <label for="introMode">Mode:</label>
+            <select id="introMode" class="mode-select">
+              <option value="single" selected>Single Player</option>
+              <option value="two">Two Players</option>
+            </select>
+          </div>
+          <div class="intro-field">
+            <label for="introTimerSeconds">Difficulty:</label>
+            <select id="introTimerSeconds" class="mode-select">
+              <option value="0">Cheater</option>
+              <option value="20">Beginner</option>
+              <option value="15">Intermediate</option>
+              <option value="10" selected>Advanced</option>
+              <option value="5">Pro</option>
+              <option value="3">Insane</option>
+            </select>
+          </div>
+          <div class="intro-field" id="p1NameField">
+            <label for="p1Name">Player 1 Name:</label>
+            <input id="p1Name" type="text" maxlength="16" placeholder="Player 1" required autocomplete="off" />
+          </div>
+          <div class="intro-field" id="p2NameField" style="display:none">
+            <label for="p2Name">Player 2 Name:</label>
+            <input id="p2Name" type="text" maxlength="16" placeholder="Player 2" autocomplete="off" />
+          </div>
+          <button type="submit" class="btn btn-primary intro-start">Start Game</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="gameRoot" style="display:none">
+      <header class="app-header">
+        <div class="app-logo">
+          <img id="appLogo" src="./assets/logo-rrmsOlgV.png" alt="ConQUEST logo"
+               onload="this.closest('.app-logo').classList.add('loaded')"
+               onerror="this.closest('.app-logo').classList.add('error')" />
+          <h1 class="logo-text">ConQUEST</h1>
+        </div>
+        <button id="newGameBtn" class="btn btn-ghost" style="position:absolute; right:18px; top:14px;">New Game</button>
+      </header>
+
+      <main class="layout">
+        <section class="map-section">
+          <div id="mapContainer" class="map-container" aria-label="World map" role="img"></div>
+          <div class="map-flag-overlay">
+            <div class="flag-emoji" id="flagEmoji">🏳️</div>
+          </div>
+        </section>
+
+        <div class="below-row">
+          <aside class="side-panel" id="p1Panel">
+            <div class="panel-header">
+              <div class="panel-name" id="p1PanelName">&nbsp;</div>
+            </div>
+            <div class="panel-score">Score: <span id="p1PanelScore">0</span></div>
+            <div class="flag-grid" id="p1FlagGrid"></div>
+          </aside>
+
+
+          <section class="play-section" id="playSection">
+            <div class="top-bar">
+              <div id="playerBanner" class="player-banner"></div>
+              <div id="turnTimer" class="turn-timer" aria-live="polite">5</div>
+            </div>
+
+            <div class="question-area">
+              <div class="question question-country">
+                <h2>Country</h2>
+                <div id="countryChoices" class="choices"></div>
+              </div>
+
+              <div class="question question-capital">
+                <h2>Capital</h2>
+                <div id="capitalChoices" class="choices"></div>
+              </div>
+
+              <div id="feedback" class="feedback" aria-live="polite"></div>
+            </div>
+
+            <button id="surrenderBtn" class="btn btn-danger surrender-btn" type="button" style="display:none;"><span class="flag-icon">🏳️</span> Surrender</button>
+          </section>
+
+          <aside class="side-panel" id="p2Panel">
+            <div class="panel-header">
+              <div class="panel-name" id="p2PanelName">&nbsp;</div>
+            </div>
+            <div class="panel-score">Score: <span id="p2PanelScore">0</span></div>
+            <div class="flag-grid" id="p2FlagGrid"></div>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+    <div id="overlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+      <div class="overlay-content">
+        <h2 id="overlayTitle">You win! 🎉</h2>
+        <p id="overlayMessage">You've conquered more than half the world.</p>
+        <div class="overlay-actions">
+          <button id="playAgainBtn" class="btn btn-primary">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+  </body>
+  </html>
