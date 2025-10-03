@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KC Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .project-card.coming-soon {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+        }
+
+        .project-card.coming-soon:hover {
+            transform: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .project-title {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .project-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .project-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .project-card.coming-soon .project-tag {
+            background: #999;
+        }
+
+        .coming-soon-badge {
+            background: #ff9800;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 KC Projects</h1>
+            <p class="subtitle">A collection of fun and educational games</p>
+        </header>
+
+        <div class="projects-grid">
+            <a href="./chantingtrain/" class="project-card">
+                <div class="project-icon">🚂</div>
+                <div class="project-title">Chanting Train</div>
+                <div class="project-description">
+                    Type along with Islamic chants and watch your train grow! A fun way to practice and memorize prayers.
+                </div>
+                <span class="project-tag">Educational</span>
+            </a>
+
+            <a href="./conquest/" class="project-card">
+                <div class="project-icon">🌍</div>
+                <div class="project-title">ConQUEST</div>
+                <div class="project-description">
+                    Test your geography knowledge! Match countries with their capitals and conquer the world map.
+                </div>
+                <span class="project-tag">Geography</span>
+            </a>
+
+            <a href="./goingviral/" class="project-card">
+                <div class="project-icon">🦠</div>
+                <div class="project-title">Going Viral</div>
+                <div class="project-description">
+                    Watch how viruses spread! An interactive simulation showing disease transmission patterns.
+                </div>
+                <span class="project-tag">Simulation</span>
+            </a>
+
+            <div class="project-card coming-soon">
+                <div class="project-icon">🚗</div>
+                <div class="project-title">Car Emoji</div>
+                <div class="project-description">
+                    A fun car-themed emoji game. Race through challenges and collect emojis along the way!
+                </div>
+                <span class="coming-soon-badge">Coming Soon</span>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2024 KC Projects | Built with ❤️</p>
+        </footer>
+    </div>
+</body>
+</html>
